@@ -1,6 +1,106 @@
+'use client';
+
+import { useState } from 'react';
 import Calendar from './components/Calendar';
+import { TransactionModal } from './components/TransactionModal';
+import { TransactionList } from './components/TransactionList';
+import { ConfirmModal } from './components/ConfirmModal';
+import { useTransactions } from './hooks/useTransactions';
+import { Transaction, TransactionFormData } from './types/transaction';
 
 export default function Home() {
+  const {
+    transactions,
+    isLoading,
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+    getTransactionsByDate,
+    getStatistics,
+  } = useTransactions();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTransaction, setEditingTransaction] =
+    useState<Transaction | null>(null);
+  const [modalDefaultType, setModalDefaultType] = useState<
+    'income' | 'expense'
+  >('income');
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [transactionToDelete, setTransactionToDelete] =
+    useState<Transaction | null>(null);
+
+  // 今月の統計を取得
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const currentStats = getStatistics(currentYear, currentMonth);
+
+  // モーダルを開く
+  const openModal = (type: 'income' | 'expense', transaction?: Transaction) => {
+    setModalDefaultType(type);
+    setEditingTransaction(transaction || null);
+    setIsModalOpen(true);
+  };
+
+  // モーダルを閉じる
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingTransaction(null);
+  };
+
+  // 取引を保存
+  const handleSaveTransaction = (formData: TransactionFormData) => {
+    if (editingTransaction) {
+      updateTransaction(editingTransaction.id, formData);
+    } else {
+      addTransaction(formData);
+    }
+  };
+
+  // 取引を削除（確認付き）
+  const handleDeleteTransaction = (id: string) => {
+    const transaction = transactions.find(t => t.id === id);
+    if (transaction) {
+      setTransactionToDelete(transaction);
+      setIsDeleteModalOpen(true);
+    }
+  };
+
+  // 削除確認
+  const confirmDelete = () => {
+    if (transactionToDelete) {
+      deleteTransaction(transactionToDelete.id);
+      setIsDeleteModalOpen(false);
+      setTransactionToDelete(null);
+    }
+  };
+
+  // 削除キャンセル
+  const cancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setTransactionToDelete(null);
+  };
+
+  // 金額のフォーマット
+  const formatAmount = (amount: number) => {
+    return new Intl.NumberFormat('ja-JP', {
+      style: 'currency',
+      currency: 'JPY',
+    }).format(amount);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">読み込み中...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900">
       {/* ヘッダー */}
@@ -28,10 +128,16 @@ export default function Home() {
               </h1>
             </div>
             <nav className="flex items-center space-x-4">
-              <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <button
+                onClick={() => openModal('income')}
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors"
+              >
                 収入
               </button>
-              <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <button
+                onClick={() => openModal('expense')}
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+              >
                 支出
               </button>
               <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
@@ -66,7 +172,7 @@ export default function Home() {
                   今月の収入
                 </p>
                 <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-                  ¥0
+                  {formatAmount(currentStats.income)}
                 </p>
               </div>
               <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
@@ -94,7 +200,7 @@ export default function Home() {
                   今月の支出
                 </p>
                 <p className="text-2xl font-bold text-red-600 dark:text-red-400">
-                  ¥0
+                  {formatAmount(currentStats.expense)}
                 </p>
               </div>
               <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-lg">
@@ -121,8 +227,14 @@ export default function Home() {
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   残高
                 </p>
-                <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  ¥0
+                <p
+                  className={`text-2xl font-bold ${
+                    currentStats.balance >= 0
+                      ? 'text-blue-600 dark:text-blue-400'
+                      : 'text-red-600 dark:text-red-400'
+                  }`}
+                >
+                  {formatAmount(currentStats.balance)}
                 </p>
               </div>
               <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
@@ -144,8 +256,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* カレンダーセクション */}
-        <div className="flex flex-col lg:flex-row gap-8">
+        {/* カレンダーと取引リストセクション */}
+        <div className="flex flex-col lg:flex-row gap-8 mb-8">
           <div className="lg:w-1/2">
             <div className="mb-6">
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
@@ -155,16 +267,23 @@ export default function Home() {
                 日付を選択して、その日の収支を確認・編集できます
               </p>
             </div>
-            <Calendar />
+            <Calendar
+              selectedDate={selectedDate}
+              onDateSelect={setSelectedDate}
+              transactions={transactions}
+            />
           </div>
 
           <div className="lg:w-1/2">
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 h-fit">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 h-fit mb-6">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                 クイックアクション
               </h3>
               <div className="space-y-3">
-                <button className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+                <button
+                  onClick={() => openModal('income', undefined)}
+                  className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                >
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -180,7 +299,10 @@ export default function Home() {
                   </svg>
                   <span>収入を追加</span>
                 </button>
-                <button className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+                <button
+                  onClick={() => openModal('expense', undefined)}
+                  className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                >
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -214,9 +336,38 @@ export default function Home() {
                 </button>
               </div>
             </div>
+
+            {/* 取引リスト */}
+            <TransactionList
+              transactions={transactions}
+              onEdit={transaction => openModal(transaction.type, transaction)}
+              onDelete={handleDeleteTransaction}
+              selectedDate={selectedDate || undefined}
+            />
           </div>
         </div>
       </main>
+
+      {/* モーダル */}
+      <TransactionModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onSubmit={handleSaveTransaction}
+        transaction={editingTransaction}
+        defaultType={modalDefaultType}
+        defaultDate={selectedDate || undefined}
+      />
+
+      {/* 削除確認モーダル */}
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        title="取引を削除"
+        message={`「${transactionToDelete?.description}」を削除しますか？この操作は取り消せません。`}
+        confirmText="削除"
+        cancelText="キャンセル"
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+      />
     </div>
   );
 }
