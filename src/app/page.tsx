@@ -322,7 +322,10 @@ export default function Home() {
                   </svg>
                   <span>支出を追加</span>
                 </button>
-                <button className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+                <Link 
+                  href="/reports"
+                  className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                >
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -337,7 +340,7 @@ export default function Home() {
                     />
                   </svg>
                   <span>レポートを見る</span>
-                </button>
+                </Link>
               </div>
             </div>
 
