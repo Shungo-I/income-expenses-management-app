@@ -8,7 +8,7 @@ import { ConfirmModal } from './components/ConfirmModal';
 import { useTransactions } from './hooks/useTransactions';
 import { Transaction, TransactionFormData } from './types/transaction';
 
-export default function Home() {
+const Home = () => {
   const {
     transactions,
     isLoading,
@@ -370,4 +370,6 @@ export default function Home() {
       />
     </div>
   );
-}
+};
+
+export default Home;
