@@ -2,12 +2,15 @@
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
-interface CategoryPieChartProps {
+type CategoryPieChartProps = {
+  /** カテゴリ別支出データの配列 */
   data: Array<{
+    /** カテゴリ名（日本語ラベル） */
     name: string;
+    /** そのカテゴリの支出金額（円単位） */
     value: number;
   }>;
-}
+};
 
 // カテゴリ用のカラーパレット
 const COLORS = [

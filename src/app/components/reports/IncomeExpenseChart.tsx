@@ -2,10 +2,12 @@
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-interface IncomeExpenseChartProps {
+type IncomeExpenseChartProps = {
+  /** 収入の合計金額（円単位） */
   income: number;
+  /** 支出の合計金額（円単位） */
   expense: number;
-}
+};
 
 export const IncomeExpenseChart: React.FC<IncomeExpenseChartProps> = ({ income, expense }) => {
   const data = [

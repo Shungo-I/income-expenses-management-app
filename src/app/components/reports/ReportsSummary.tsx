@@ -1,13 +1,18 @@
 'use client';
 
-interface ReportsSummaryProps {
+type ReportsSummaryProps = {
+  /** レポートの統計データ */
   statistics: {
+    /** 収入の合計金額（円単位） */
     income: number;
+    /** 支出の合計金額（円単位） */
     expense: number;
+    /** 収支バランス（収入 - 支出、円単位） */
     balance: number;
+    /** 取引の総件数 */
     totalTransactions: number;
   };
-}
+};
 
 export const ReportsSummary: React.FC<ReportsSummaryProps> = ({ statistics }) => {
   const formatAmount = (amount: number) => {

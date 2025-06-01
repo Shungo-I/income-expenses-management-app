@@ -7,26 +7,38 @@ import path from 'path';
 
 const execAsync = promisify(exec);
 
-interface ImportInfo {
+type ImportInfo = {
+  /** インポートするファイルのパス（相対パスまたは絶対パス） */
   importPath: string;
+  /** インポートの種類（デフォルト、名前付き、名前空間、副作用のみ） */
   importType: 'default' | 'named' | 'namespace' | 'side-effect';
+  /** インポートされる名前の配列（副作用インポートの場合は空配列） */
   importedNames: string[];
+  /** このインポート文が記述されているファイルのパス */
   sourceFile: string;
-}
+};
 
-interface ExportInfo {
+type ExportInfo = {
+  /** エクスポートされる名前（デフォルトエクスポートの場合は'default'） */
   exportName: string;
+  /** エクスポートの種類（デフォルト、名前付き、名前空間） */
   exportType: 'default' | 'named' | 'namespace';
+  /** このエクスポート文が記述されているファイルのパス */
   sourceFile: string;
-}
+};
 
-interface ImpactAnalysis {
+type ImpactAnalysis = {
+  /** PRで変更されたファイルのパスの配列 */
   changedFiles: string[];
+  /** 直接的な依存関係のマップ（キー：依存されるファイル、値：そのファイルに依存するファイルのセット） */
   directDependents: Map<string, Set<string>>;
+  /** 間接的な依存関係のマップ（キー：依存されるファイル、値：間接的に依存するファイルのセット） */
   indirectDependents: Map<string, Set<string>>;
+  /** 全ファイルのエクスポート情報のマップ（キー：ファイルパス、値：エクスポート情報の配列） */
   exports: Map<string, ExportInfo[]>;
+  /** 全ファイルのインポート情報のマップ（キー：ファイルパス、値：インポート情報の配列） */
   imports: Map<string, ImportInfo[]>;
-}
+};
 
 class ImpactAnalyzer {
   private project: Project;

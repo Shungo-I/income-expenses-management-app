@@ -2,14 +2,19 @@
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-interface MonthlyTrendChartProps {
+type MonthlyTrendChartProps = {
+  /** 月次トレンドデータの配列（過去12ヶ月分） */
   data: Array<{
+    /** 月の表示名（例：'2024年1月'） */
     month: string;
+    /** その月の収入合計金額（円単位） */
     income: number;
+    /** その月の支出合計金額（円単位） */
     expense: number;
+    /** その月の収支バランス（収入 - 支出、円単位） */
     balance: number;
   }>;
-}
+};
 
 export const MonthlyTrendChart: React.FC<MonthlyTrendChartProps> = ({ data }) => {
   const formatAmount = (value: number) => {
