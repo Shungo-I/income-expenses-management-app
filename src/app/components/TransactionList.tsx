@@ -3,12 +3,12 @@
 import { FC } from 'react';
 import { Transaction, CATEGORY_LABELS } from '../types/transaction';
 
-interface TransactionListProps {
+type TransactionListProps = {
   transactions: Transaction[];
   onEdit: (transaction: Transaction) => void;
   onDelete: (id: string) => void;
   selectedDate?: string;
-}
+};
 
 export const TransactionList: FC<TransactionListProps> = ({
   transactions,

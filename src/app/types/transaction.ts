@@ -17,9 +17,9 @@ export type TransactionCategory =
   | 'healthcare' // 医療費
   | 'education' // 教育費
   | 'shopping' // 買い物
-  | 'other_expense'; // その他支出
+  | 'other_expense';
 
-export interface Transaction {
+export type Transaction = {
   id: string;
   type: TransactionType;
   amount: number;
@@ -28,15 +28,15 @@ export interface Transaction {
   date: string; // YYYY-MM-DD format
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export interface TransactionFormData {
+export type TransactionFormData = {
   type: TransactionType;
   amount: number;
   category: TransactionCategory;
   description?: string;
   date: string;
-}
+};
 
 export const CATEGORY_LABELS: Record<TransactionCategory, string> = {
   // 収入

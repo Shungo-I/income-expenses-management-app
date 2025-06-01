@@ -2,7 +2,7 @@
 
 import { FC } from 'react';
 
-interface ConfirmModalProps {
+type ConfirmModalProps = {
   isOpen: boolean;
   title: string;
   message: string;
@@ -11,7 +11,7 @@ interface ConfirmModalProps {
   confirmButtonColor?: 'red' | 'blue' | 'green';
   onConfirm: () => void;
   onCancel: () => void;
-}
+};
 
 export const ConfirmModal: FC<ConfirmModalProps> = ({
   isOpen,

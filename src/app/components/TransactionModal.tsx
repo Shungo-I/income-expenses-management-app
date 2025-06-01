@@ -11,14 +11,14 @@ import {
   EXPENSE_CATEGORIES,
 } from '../types/transaction';
 
-interface TransactionModalProps {
+type TransactionModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: TransactionFormData) => void;
   transaction?: Transaction | null;
   defaultType?: TransactionType;
   defaultDate?: string;
-}
+};
 
 export const TransactionModal: FC<TransactionModalProps> = ({
   isOpen,

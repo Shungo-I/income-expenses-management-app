@@ -11,11 +11,11 @@ type CalendarDay = {
   hasTransactions: boolean;
 };
 
-interface CalendarProps {
+type CalendarProps = {
   selectedDate?: string | null;
   onDateSelect?: (date: string | null) => void;
   transactions?: Transaction[];
-}
+};
 
 const MONTH_NAMES = [
   '1月',
