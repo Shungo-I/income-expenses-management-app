@@ -359,11 +359,93 @@ class ImpactAnalyzer {
     output += `- **影響を受けるファイル数**: ${totalAffected.size}\n`;
     output += `- **総影響ファイル数**: ${changedFiles.length + totalAffected.size}\n\n`;
     
+    // 影響を受けるページの一覧
+    const affectedPages = this.extractAffectedPages(changedFiles, totalAffected);
+    if (affectedPages.length > 0) {
+      output += `## 📄 影響を受けるページ (${affectedPages.length}件)\n\n`;
+      affectedPages.forEach(pagePath => {
+        const relativePath = path.relative(this.rootDir, pagePath);
+        const routePath = this.convertFilePathToRoute(relativePath);
+        output += `- \`${relativePath}\``;
+        if (routePath) {
+          output += ` → **${routePath}**`;
+        }
+        output += '\n';
+      });
+      output += '\n';
+    }
+    
     if (totalAffected.size > 0) {
       output += `⚠️ **テスト対象推奨**: 変更されたファイルとその依存ファイルをテストすることを推奨します。\n\n`;
     }
     
     return output;
+  }
+
+  /**
+   * 影響を受けるページファイルを抽出
+   */
+  private extractAffectedPages(changedFiles: string[], affectedFiles: Set<string>): string[] {
+    const allFiles = new Set([...changedFiles, ...Array.from(affectedFiles)]);
+    const pageFiles: string[] = [];
+
+    allFiles.forEach(file => {
+      const relativePath = path.relative(this.rootDir, file);
+      
+      // Next.js App Router のページファイル (page.tsx, page.ts)
+      if (relativePath.includes('/page.tsx') || relativePath.includes('/page.ts')) {
+        pageFiles.push(file);
+      }
+      // Next.js Pages Router のページファイル
+      else if (relativePath.startsWith('src/pages/') || relativePath.startsWith('pages/')) {
+        // index.tsx/ts は除外（これらは通常ディレクトリのデフォルトページ）
+        if (!relativePath.endsWith('/index.tsx') && !relativePath.endsWith('/index.ts')) {
+          if (relativePath.endsWith('.tsx') || relativePath.endsWith('.ts')) {
+            // _app.tsx, _document.tsx, _error.tsx などの特殊ファイルは除外
+            if (!path.basename(relativePath).startsWith('_')) {
+              pageFiles.push(file);
+            }
+          }
+        } else {
+          // index.tsx/ts も含める場合（オプション）
+          pageFiles.push(file);
+        }
+      }
+    });
+
+    // 重複を除去してソート
+    return Array.from(new Set(pageFiles)).sort();
+  }
+
+  /**
+   * ファイルパスをルートパスに変換
+   */
+  private convertFilePathToRoute(filePath: string): string | null {
+    // App Router の場合
+    if (filePath.includes('/app/') && filePath.includes('/page.')) {
+      const match = filePath.match(/\/app\/(.+)\/page\.(tsx?|jsx?)$/);
+      if (match) {
+        const routePath = match[1];
+        return `/${routePath}`;
+      }
+      // ルートページの場合
+      if (filePath.includes('/app/page.')) {
+        return '/';
+      }
+    }
+
+    // Pages Router の場合
+    if (filePath.startsWith('src/pages/') || filePath.startsWith('pages/')) {
+      const withoutExtension = filePath.replace(/\.(tsx?|jsx?)$/, '');
+      const routePart = withoutExtension
+        .replace(/^src\/pages\//, '')
+        .replace(/^pages\//, '')
+        .replace(/\/index$/, ''); // index は除去
+
+      return routePart ? `/${routePart}` : '/';
+    }
+
+    return null;
   }
 }
 

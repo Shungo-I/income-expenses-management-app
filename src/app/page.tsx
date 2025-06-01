@@ -1,5 +1,7 @@
 'use client';
 
+// テスト用コメント: 影響範囲分析のテスト
+
 import { FC, useState } from 'react';
 import Link from 'next/link';
 import Calendar from './components/Calendar';
