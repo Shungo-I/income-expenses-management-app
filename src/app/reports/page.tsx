@@ -10,7 +10,7 @@ import { ReportsSummary } from '../components/reports/ReportsSummary';
 import { CATEGORY_LABELS } from '../types/transaction';
 
 export default function ReportsPage() {
-  const { transactions, getStatistics } = useTransactions();
+  const { transactions } = useTransactions();
   const [selectedPeriod, setSelectedPeriod] = useState<string>('current-month');
   
   // 期間の計算

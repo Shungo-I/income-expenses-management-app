@@ -1,7 +1,6 @@
 #!/usr/bin/env tsx
 
-import { Project, SourceFile, ImportDeclaration, ExportDeclaration } from 'ts-morph';
-import { readFile } from 'fs/promises';
+import { Project, SourceFile } from 'ts-morph';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';

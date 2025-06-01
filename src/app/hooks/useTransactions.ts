@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from 'react';
 import {
   Transaction,
   TransactionFormData,
-  TransactionType,
 } from '../types/transaction';
 
 const STORAGE_KEY = 'income-expense-transactions';

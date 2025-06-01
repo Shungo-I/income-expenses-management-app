@@ -18,7 +18,6 @@ const Home: FC = () => {
     addTransaction,
     updateTransaction,
     deleteTransaction,
-    getTransactionsByDate,
     getStatistics,
   } = useTransactions();
 
