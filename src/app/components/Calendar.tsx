@@ -4,16 +4,24 @@ import { useState, useMemo, FC } from 'react';
 import { Transaction } from '../types/transaction';
 
 type CalendarDay = {
+  /** 日付の数値 */
   date: number;
+  /** 現在表示中の月の日付かどうか */
   isCurrentMonth: boolean;
+  /** 今日の日付かどうか */
   isToday: boolean;
+  /** 選択されている日付かどうか */
   isSelected: boolean;
+  /** その日に取引があるかどうか */
   hasTransactions: boolean;
 };
 
 type CalendarProps = {
+  /** 選択されている日付（YYYY-MM-DD形式、nullの場合は未選択） */
   selectedDate?: string | null;
+  /** 日付選択時のコールバック関数 */
   onDateSelect?: (date: string | null) => void;
+  /** 表示する取引データの配列 */
   transactions?: Transaction[];
 };
 

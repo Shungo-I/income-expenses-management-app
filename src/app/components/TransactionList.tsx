@@ -4,9 +4,13 @@ import { FC } from 'react';
 import { Transaction, CATEGORY_LABELS } from '../types/transaction';
 
 type TransactionListProps = {
+  /** 表示する取引データの配列 */
   transactions: Transaction[];
+  /** 取引編集時のコールバック関数 */
   onEdit: (transaction: Transaction) => void;
+  /** 取引削除時のコールバック関数 */
   onDelete: (id: string) => void;
+  /** フィルタ対象の日付（YYYY-MM-DD形式、指定時はその日の取引のみ表示） */
   selectedDate?: string;
 };
 

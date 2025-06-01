@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 };
 
 type RootLayoutProps = {
+  /** レンダリングする子要素 */
   children: React.ReactNode;
 };
 

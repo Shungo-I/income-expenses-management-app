@@ -3,13 +3,21 @@
 import { FC } from 'react';
 
 type ConfirmModalProps = {
+  /** モーダルの表示状態 */
   isOpen: boolean;
+  /** モーダルのタイトル */
   title: string;
+  /** 確認メッセージ */
   message: string;
+  /** 確認ボタンのテキスト（デフォルト: '削除'） */
   confirmText?: string;
+  /** キャンセルボタンのテキスト（デフォルト: 'キャンセル'） */
   cancelText?: string;
+  /** 確認ボタンの色テーマ（デフォルト: 'red'） */
   confirmButtonColor?: 'red' | 'blue' | 'green';
+  /** 確認ボタンクリック時のコールバック関数 */
   onConfirm: () => void;
+  /** キャンセルボタンクリック時のコールバック関数 */
   onCancel: () => void;
 };
 
