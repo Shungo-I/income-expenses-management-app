@@ -1,36 +1,206 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📊 収支管理アプリ
 
-## Getting Started
+![Next.js](https://img.shields.io/badge/Next.js-15.3.3-black?style=flat-square&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4-38bdf8?style=flat-square&logo=tailwind-css)
 
-First, run the development server:
+日々の収支を簡単に記録し、視覚的に把握できるモダンな家計簿・収支管理アプリケーションです。
+
+## ✨ 実装済み機能（UI/UX基盤）
+
+### 🏠 **ページトップ**
+
+- **モダンなデザイン**: グラデーション背景とガラスモーフィズム効果
+- **レスポンシブ対応**: デスクトップとモバイルの両方に最適化
+- **ダークモード対応**: CSSクラスでダークモード準備完了（手動切り替え機能は未実装）
+
+### 🧭 **ヘッダー**
+
+- アプリケーションロゴとタイトル
+- ナビゲーションメニュー（収入・支出・レポート）※UIのみ、機能は未実装
+- スティッキーヘッダー（スクロール時も固定表示）
+
+### 📈 **統計ダッシュボード（UIテンプレート）**
+
+- **今月の収入**: 緑色のカードで表示（現在は¥0固定値）
+- **今月の支出**: 赤色のカードで表示（現在は¥0固定値）
+- **残高**: 青色のカードで表示（現在は¥0固定値）
+- 各カードには対応するアイコン付き
+- ⚠️ **注意**: 実際のデータ計算・表示機能は未実装
+
+### 📅 **インタラクティブカレンダー**
+
+- 日本語表示（月名・曜日）
+- 今日の日付のハイライト表示
+- 日付選択機能
+- 前月・次月のナビゲーション
+- 選択された日付の詳細表示
+- スムーズなアニメーション効果
+
+### 🚀 **クイックアクション（UIのみ）**
+
+- **収入を追加**: 緑色のグラデーションボタン
+- **支出を追加**: 赤色のグラデーションボタン
+- **レポートを見る**: 青色のグラデーションボタン
+- ホバー効果とシャドウアニメーション
+- ⚠️ **注意**: ボタンクリック時の機能は未実装
+
+## 🚧 未実装機能
+
+### 📊 **データ管理**
+- [ ] 収入・支出データの追加・編集・削除機能
+- [ ] データの永続化（ローカルストレージ・データベース）
+- [ ] 実際の統計データの計算・表示
+
+### 🎛️ **機能実装**
+- [ ] ダークモードの自動切り替え（システム設定連動）
+- [ ] クイックアクションボタンの機能実装
+- [ ] ナビゲーションメニューの機能実装
+- [ ] カレンダー選択日の収支データ表示・編集
+
+### 📈 **高度な機能**
+- [ ] レポート・グラフ機能
+- [ ] カテゴリー管理
+- [ ] データのインポート・エクスポート
+- [ ] 予算設定機能
+- [ ] 検索・フィルター機能
+
+## 🛠️ 技術スタック
+
+- **フレームワーク**: Next.js 15.3.3（App Router使用）
+- **言語**: TypeScript
+- **スタイリング**: Tailwind CSS v4
+- **UI/UX**: モダンなデザインシステム
+- **レスポンシブ**: モバイルファースト設計
+- **アクセシビリティ**: セマンティックHTML使用
+
+## 🔧 コード品質・開発ツール
+
+### **ESLint**
+- Next.js推奨設定を使用
+- TypeScriptとの統合
+- リアルタイムでのコード品質チェック
+
+### **Prettier**
+- 統一されたコードフォーマット
+- ESLintとの完全な統合
+- 自動コードスタイル修正
+
+#### Prettierの使用方法
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# すべてのファイルをフォーマット
+npm run format
+
+# フォーマットが正しいかチェック
+npm run format:check
+
+# ESLint（Prettierルールを含む）の実行
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Prettier設定（`.prettierrc.json`）
+- セミコロンあり
+- シングルクォート使用
+- 行幅80文字
+- インデント2スペース
+- ES5トレーリングコンマ
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📱 デザイン特徴
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🎨 **カラーパレット**
 
-## Learn More
+- **プライマリ**: ブルー系グラデーション
+- **収入**: グリーン系（#10b981 - #059669）
+- **支出**: レッド系（#ef4444 - #f43f5e）
+- **ニュートラル**: グレー系（ライト・ダークモード対応）
 
-To learn more about Next.js, take a look at the following resources:
+### 🌈 **視覚効果**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- グラデーション背景
+- ガラスモーフィズム効果
+- ソフトシャドウ
+- スムーズなトランジション
+- ホバーアニメーション
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 開発・実行方法
 
-## Deploy on Vercel
+### 前提条件
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Node.js 18以上
+- npm または yarn
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### インストール
+
+```bash
+# 依存関係のインストール
+npm install
+
+# 開発サーバーの起動
+npm run dev
+
+# ブラウザで http://localhost:3000 を開く
+```
+
+### ビルド・本番環境
+
+```bash
+# 本番用ビルド
+npm run build
+
+# 本番サーバーの起動
+npm start
+```
+
+### コード品質・フォーマット
+
+```bash
+# コードフォーマットの実行
+npm run format
+
+# フォーマットチェック
+npm run format:check
+
+# ESLint実行
+npm run lint
+```
+
+## 📁 プロジェクト構成
+
+```
+src/
+├── app/
+│   ├── components/
+│   │   └── Calendar.tsx          # カレンダーコンポーネント
+│   ├── globals.css               # グローバルスタイル
+│   ├── layout.tsx                # アプリケーションレイアウト
+│   └── page.tsx                  # メインページ
+├── .prettierrc.json              # Prettier設定
+├── .prettierignore               # Prettier除外ファイル
+├── eslint.config.mjs             # ESLint設定
+├── package.json                  # 依存関係とスクリプト
+└── tailwind.config.js           # Tailwind設定
+```
+
+## 📊 現在の状態
+
+現在は**UI/UXの基盤**が完成しており、以下の状態です：
+
+- ✅ モダンなページトップデザイン
+- ✅ インタラクティブカレンダー（完全実装）
+- ✅ 統計ダッシュボード（UIテンプレートのみ）
+- ✅ クイックアクションボタン（UIのみ）
+- ✅ レスポンシブ・ダークモード対応（CSS準備完了）
+- ❌ データの管理・操作機能（未実装）
+- ❌ 実際の統計計算（未実装）
+- ❌ ボタン機能（未実装）
+
+**次のステップ**: データ管理機能の実装、統計計算ロジックの追加、ユーザーインタラクション機能の実装
+
+## 🤝 貢献
+
+このプロジェクトは積極的に開発中です。機能追加や改善提案をお待ちしています。
+
+---
+
+💡 **目標**: 誰でも簡単に使える、美しく実用的な収支管理アプリケーションの構築
