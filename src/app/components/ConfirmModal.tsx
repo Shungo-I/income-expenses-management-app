@@ -1,6 +1,6 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, MouseEvent } from 'react';
 
 type ConfirmModalProps = {
   /** モーダルの表示状態 */
@@ -32,7 +32,7 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({
   onCancel,
 }) => {
   // 背景クリックでモーダルを閉じる
-  const handleBackdropClick = (e: React.MouseEvent) => {
+  const handleBackdropClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
       onCancel();
     }

@@ -1,5 +1,6 @@
 'use client';
 
+import { FC } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 type IncomeExpenseChartProps = {
@@ -9,7 +10,7 @@ type IncomeExpenseChartProps = {
   expense: number;
 };
 
-export const IncomeExpenseChart: React.FC<IncomeExpenseChartProps> = ({ income, expense }) => {
+export const IncomeExpenseChart: FC<IncomeExpenseChartProps> = ({ income, expense }) => {
   const data = [
     {
       name: '収入・支出',

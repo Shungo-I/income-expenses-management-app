@@ -1,5 +1,6 @@
 'use client';
 
+import { FC } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 type MonthlyTrendChartProps = {
@@ -16,7 +17,7 @@ type MonthlyTrendChartProps = {
   }>;
 };
 
-export const MonthlyTrendChart: React.FC<MonthlyTrendChartProps> = ({ data }) => {
+export const MonthlyTrendChart: FC<MonthlyTrendChartProps> = ({ data }) => {
   const formatAmount = (value: number) => {
     return new Intl.NumberFormat('ja-JP', {
       style: 'currency',

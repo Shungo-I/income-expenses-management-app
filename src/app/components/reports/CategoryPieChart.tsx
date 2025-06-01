@@ -1,5 +1,6 @@
 'use client';
 
+import { FC } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 type CategoryPieChartProps = {
@@ -26,7 +27,7 @@ const COLORS = [
   '#f97316', // orange-500
 ];
 
-export const CategoryPieChart: React.FC<CategoryPieChartProps> = ({ data }) => {
+export const CategoryPieChart: FC<CategoryPieChartProps> = ({ data }) => {
   const formatAmount = (value: number) => {
     return new Intl.NumberFormat('ja-JP', {
       style: 'currency',

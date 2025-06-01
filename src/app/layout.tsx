@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 type RootLayoutProps = {
   /** レンダリングする子要素 */
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 const RootLayout: FC<RootLayoutProps> = ({ children }) => {

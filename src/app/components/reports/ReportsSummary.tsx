@@ -1,5 +1,7 @@
 'use client';
 
+import { FC } from 'react';
+
 type ReportsSummaryProps = {
   /** レポートの統計データ */
   statistics: {
@@ -14,7 +16,7 @@ type ReportsSummaryProps = {
   };
 };
 
-export const ReportsSummary: React.FC<ReportsSummaryProps> = ({ statistics }) => {
+export const ReportsSummary: FC<ReportsSummaryProps> = ({ statistics }) => {
   const formatAmount = (amount: number) => {
     return new Intl.NumberFormat('ja-JP', {
       style: 'currency',

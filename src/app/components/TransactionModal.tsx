@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, FC } from 'react';
+import { useState, useEffect, useCallback, FC, FormEvent, MouseEvent } from 'react';
 import {
   Transaction,
   TransactionFormData,
@@ -103,7 +103,7 @@ export const TransactionModal: FC<TransactionModalProps> = ({
   }, [formData]);
 
   // フォーム送信
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
     if (validateForm()) {
@@ -122,7 +122,7 @@ export const TransactionModal: FC<TransactionModalProps> = ({
   };
 
   // 背景クリックでモーダルを閉じる
-  const handleBackdropClick = (e: React.MouseEvent) => {
+  const handleBackdropClick = (e: MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
