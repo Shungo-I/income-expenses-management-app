@@ -80,13 +80,13 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <div className="flex space-x-3">
             <button
               onClick={onCancel}
-              className="flex-1 py-2 px-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              className="flex-1 py-2 px-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
             >
               {cancelText}
             </button>
             <button
               onClick={onConfirm}
-              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${getConfirmButtonStyles()}`}
+              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors cursor-pointer ${getConfirmButtonStyles()}`}
             >
               {confirmText}
             </button>
