@@ -1,5 +1,7 @@
 'use client';
 
+import { FC } from 'react';
+
 interface ConfirmModalProps {
   isOpen: boolean;
   title: string;
@@ -11,7 +13,7 @@ interface ConfirmModalProps {
   onCancel: () => void;
 }
 
-export const ConfirmModal: React.FC<ConfirmModalProps> = ({
+export const ConfirmModal: FC<ConfirmModalProps> = ({
   isOpen,
   title,
   message,

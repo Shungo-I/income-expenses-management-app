@@ -1,5 +1,6 @@
 'use client';
 
+import { FC } from 'react';
 import { Transaction, CATEGORY_LABELS } from '../types/transaction';
 
 interface TransactionListProps {
@@ -9,7 +10,7 @@ interface TransactionListProps {
   selectedDate?: string;
 }
 
-export const TransactionList: React.FC<TransactionListProps> = ({
+export const TransactionList: FC<TransactionListProps> = ({
   transactions,
   onEdit,
   onDelete,

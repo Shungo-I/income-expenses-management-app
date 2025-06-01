@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import Calendar from './components/Calendar';
 import { TransactionModal } from './components/TransactionModal';
 import { TransactionList } from './components/TransactionList';
@@ -8,7 +8,7 @@ import { ConfirmModal } from './components/ConfirmModal';
 import { useTransactions } from './hooks/useTransactions';
 import { Transaction, TransactionFormData } from './types/transaction';
 
-const Home = () => {
+const Home: FC = () => {
   const {
     transactions,
     isLoading,

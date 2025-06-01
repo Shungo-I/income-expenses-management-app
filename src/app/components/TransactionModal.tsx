@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, FC } from 'react';
 import {
   Transaction,
   TransactionFormData,
@@ -20,7 +20,7 @@ interface TransactionModalProps {
   defaultDate?: string;
 }
 
-export const TransactionModal: React.FC<TransactionModalProps> = ({
+export const TransactionModal: FC<TransactionModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
