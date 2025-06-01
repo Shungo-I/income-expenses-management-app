@@ -1,13 +1,21 @@
 'use client';
 
 import { useState, useMemo, FC } from 'react';
+import { Transaction } from '../types/transaction';
 
 type CalendarDay = {
   date: number;
   isCurrentMonth: boolean;
   isToday: boolean;
   isSelected: boolean;
+  hasTransactions: boolean;
 };
+
+interface CalendarProps {
+  selectedDate?: string | null;
+  onDateSelect?: (date: string | null) => void;
+  transactions?: Transaction[];
+}
 
 const MONTH_NAMES = [
   '1月',
@@ -26,13 +34,19 @@ const MONTH_NAMES = [
 
 const WEEK_DAYS = ['日', '月', '火', '水', '木', '金', '土'] as const;
 
-const Calendar: FC = () => {
+const Calendar: FC<CalendarProps> = ({
+  selectedDate,
+  onDateSelect,
+  transactions = [],
+}) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const today = new Date();
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
+
+  // 日付文字列をDateオブジェクトに変換
+  const selectedDateObj = selectedDate ? new Date(selectedDate) : null;
 
   const calendarDays = useMemo(() => {
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
@@ -45,46 +59,58 @@ const Calendar: FC = () => {
 
     // 前月の日付
     for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+      const dateStr = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(daysInPrevMonth - i).padStart(2, '0')}`;
+      const hasTransactions = transactions.some(t => t.date === dateStr);
+
       days.push({
         date: daysInPrevMonth - i,
         isCurrentMonth: false,
         isToday: false,
         isSelected: false,
+        hasTransactions,
       });
     }
 
     // 当月の日付
     for (let date = 1; date <= daysInMonth; date++) {
+      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+      const hasTransactions = transactions.some(t => t.date === dateStr);
+
       const isToday =
         today.getFullYear() === currentYear &&
         today.getMonth() === currentMonth &&
         today.getDate() === date;
       const isSelected =
-        selectedDate?.getFullYear() === currentYear &&
-        selectedDate?.getMonth() === currentMonth &&
-        selectedDate?.getDate() === date;
+        selectedDateObj?.getFullYear() === currentYear &&
+        selectedDateObj?.getMonth() === currentMonth &&
+        selectedDateObj?.getDate() === date;
 
       days.push({
         date,
         isCurrentMonth: true,
         isToday,
         isSelected,
+        hasTransactions,
       });
     }
 
     // 翌月の日付
     const remainingDays = 42 - days.length;
     for (let date = 1; date <= remainingDays; date++) {
+      const dateStr = `${currentYear}-${String(currentMonth + 2).padStart(2, '0')}-${String(date).padStart(2, '0')}`;
+      const hasTransactions = transactions.some(t => t.date === dateStr);
+
       days.push({
         date,
         isCurrentMonth: false,
         isToday: false,
         isSelected: false,
+        hasTransactions,
       });
     }
 
     return days;
-  }, [currentYear, currentMonth, selectedDate]);
+  }, [currentYear, currentMonth, selectedDateObj, transactions]);
 
   const goToPreviousMonth = () => {
     setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
@@ -95,8 +121,14 @@ const Calendar: FC = () => {
   };
 
   const selectDate = (day: CalendarDay) => {
-    if (day.isCurrentMonth) {
-      setSelectedDate(new Date(currentYear, currentMonth, day.date));
+    if (day.isCurrentMonth && onDateSelect) {
+      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day.date).padStart(2, '0')}`;
+      // 同じ日付がクリックされた場合は選択解除
+      if (selectedDate === dateStr) {
+        onDateSelect(null);
+      } else {
+        onDateSelect(dateStr);
+      }
     }
   };
 
@@ -164,7 +196,7 @@ const Calendar: FC = () => {
             key={index}
             onClick={() => selectDate(day)}
             className={`
-              h-10 flex items-center justify-center text-sm rounded-lg transition-all duration-200
+              h-10 flex items-center justify-center text-sm rounded-lg transition-all duration-200 relative
               ${
                 day.isCurrentMonth
                   ? 'text-gray-900 dark:text-white hover:bg-blue-50 dark:hover:bg-blue-900/20'
@@ -182,6 +214,10 @@ const Calendar: FC = () => {
             disabled={!day.isCurrentMonth}
           >
             {day.date}
+            {/* 取引がある日に小さな点を表示 */}
+            {day.hasTransactions && day.isCurrentMonth && !day.isSelected && (
+              <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-500 dark:bg-blue-400 rounded-full"></div>
+            )}
           </button>
         ))}
       </div>
@@ -190,9 +226,16 @@ const Calendar: FC = () => {
       {selectedDate && (
         <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
           <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
-            選択された日付: {selectedDate.getFullYear()}年
-            {selectedDate.getMonth() + 1}月{selectedDate.getDate()}日
+            選択された日付: {new Date(selectedDate).getFullYear()}年
+            {new Date(selectedDate).getMonth() + 1}月
+            {new Date(selectedDate).getDate()}日
           </p>
+          <button
+            onClick={() => onDateSelect && onDateSelect(null)}
+            className="mt-2 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 block mx-auto"
+          >
+            選択を解除
+          </button>
         </div>
       )}
     </div>
