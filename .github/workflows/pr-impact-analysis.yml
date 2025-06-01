@@ -1,0 +1,139 @@
+name: PR影響範囲分析
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main, master, develop]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  analyze-impact:
+    runs-on: ubuntu-latest
+    name: ts-morphによる影響範囲分析
+
+    steps:
+      - name: 📦 リポジトリをチェックアウト
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🟢 Node.js環境のセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📚 依存関係をインストール
+        run: npm ci
+
+      - name: 🔍 PRの差分を取得
+        id: get-changes
+        run: |
+          # PR の base ブランチと head ブランチの差分を取得
+          git fetch origin ${{ github.event.pull_request.base.ref }}
+          echo "base_sha=${{ github.event.pull_request.base.sha }}" >> $GITHUB_OUTPUT
+          echo "head_sha=${{ github.event.pull_request.head.sha }}" >> $GITHUB_OUTPUT
+
+      - name: 📊 影響範囲を分析
+        id: analyze
+        run: |
+          # Git diff のベースを設定
+          git checkout ${{ github.event.pull_request.head.sha }}
+          
+          # 分析スクリプトを実行
+          npm run analyze-impact > impact-analysis.md
+          
+          # 結果をGitHub Actionsの出力として設定
+          {
+            echo 'analysis<<EOF'
+            cat impact-analysis.md
+            echo EOF
+          } >> $GITHUB_OUTPUT
+
+      - name: 📝 PRにコメントを投稿
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            // 分析結果を読み込み
+            let analysisResult = '';
+            try {
+              analysisResult = fs.readFileSync('impact-analysis.md', 'utf8');
+            } catch (error) {
+              analysisResult = '❌ 影響範囲分析の実行に失敗しました。ログをご確認ください。';
+            }
+            
+            // 既存のbotコメントを検索
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('📊 PRの影響範囲分析結果')
+            );
+            
+            const commentBody = `${analysisResult}
+            
+            ---
+            🤖 このコメントは自動生成されました（Commit: \`${context.sha.substring(0, 7)}\`）`;
+            
+            if (botComment) {
+              // 既存のコメントを更新
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+            } else {
+              // 新規コメントを作成
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: commentBody
+              });
+            }
+
+      - name: 📈 分析結果をアーティファクトとして保存
+        uses: actions/upload-artifact@v4
+        with:
+          name: impact-analysis-${{ github.event.pull_request.number }}
+          path: impact-analysis.md
+          retention-days: 30
+
+      - name: ⚠️ 影響範囲が大きい場合の警告
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            try {
+              const analysisResult = fs.readFileSync('impact-analysis.md', 'utf8');
+              
+              // 統計情報を解析
+              const statsMatch = analysisResult.match(/- \*\*総影響ファイル数\*\*: (\d+)/);
+              const totalFiles = statsMatch ? parseInt(statsMatch[1]) : 0;
+              
+              // しきい値を設定（調整可能）
+              const WARNING_THRESHOLD = 20;
+              const CRITICAL_THRESHOLD = 50;
+              
+              if (totalFiles >= CRITICAL_THRESHOLD) {
+                core.setFailed(`🚨 影響範囲が非常に大きいです（${totalFiles}ファイル）。慎重にレビューしてください。`);
+              } else if (totalFiles >= WARNING_THRESHOLD) {
+                core.warning(`⚠️ 影響範囲が大きいです（${totalFiles}ファイル）。十分なテストを行ってください。`);
+              } else {
+                core.info(`✅ 影響範囲は適切です（${totalFiles}ファイル）。`);
+              }
+            } catch (error) {
+              core.warning('影響範囲の評価に失敗しました');
+            } 

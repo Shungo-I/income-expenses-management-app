@@ -1,0 +1,50 @@
+{
+  "thresholds": {
+    "warning": 20,
+    "critical": 50
+  },
+  "targetBranches": ["main", "master", "develop"],
+  "fileExtensions": [".ts", ".tsx", ".js", ".jsx"],
+  "excludePatterns": [
+    "node_modules/**",
+    ".next/**",
+    "dist/**",
+    "build/**",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ],
+  "includePatterns": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "components/**/*.ts",
+    "components/**/*.tsx",
+    "hooks/**/*.ts",
+    "hooks/**/*.tsx",
+    "utils/**/*.ts",
+    "utils/**/*.tsx"
+  ],
+  "analysis": {
+    "maxDepth": 10,
+    "includeIndirectDependencies": true,
+    "includeTestFiles": false,
+    "includeDependencyCountInStats": true
+  },
+  "output": {
+    "format": "markdown",
+    "includeStatistics": true,
+    "includeEmojis": true,
+    "groupByDirectory": false,
+    "showRelativePaths": true
+  },
+  "github": {
+    "commentOnPR": true,
+    "updateExistingComment": true,
+    "includeCommitInfo": true,
+    "uploadArtifact": true,
+    "artifactRetentionDays": 30
+  }
+} 
