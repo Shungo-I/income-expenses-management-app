@@ -1,6 +1,7 @@
 'use client';
 
 import { FC, useState } from 'react';
+import Link from 'next/link';
 import Calendar from './components/Calendar';
 import { TransactionModal } from './components/TransactionModal';
 import { TransactionList } from './components/TransactionList';
@@ -130,19 +131,22 @@ const Home: FC = () => {
             <nav className="flex items-center space-x-4">
               <button
                 onClick={() => openModal('income')}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors cursor-pointer"
               >
                 収入
               </button>
               <button
                 onClick={() => openModal('expense')}
-                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer"
               >
                 支出
               </button>
-              <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <Link 
+                href="/reports"
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
+              >
                 レポート
-              </button>
+              </Link>
             </nav>
           </div>
         </div>
@@ -282,7 +286,7 @@ const Home: FC = () => {
               <div className="space-y-3">
                 <button
                   onClick={() => openModal('income', undefined)}
-                  className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer"
                 >
                   <svg
                     className="w-5 h-5"
@@ -301,7 +305,7 @@ const Home: FC = () => {
                 </button>
                 <button
                   onClick={() => openModal('expense', undefined)}
-                  className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer"
                 >
                   <svg
                     className="w-5 h-5"
@@ -318,7 +322,10 @@ const Home: FC = () => {
                   </svg>
                   <span>支出を追加</span>
                 </button>
-                <button className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+                <Link 
+                  href="/reports"
+                  className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer"
+                >
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -333,7 +340,7 @@ const Home: FC = () => {
                     />
                   </svg>
                   <span>レポートを見る</span>
-                </button>
+                </Link>
               </div>
             </div>
 
