@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, FC } from 'react';
 import {
   Transaction,
   TransactionFormData,
@@ -11,16 +11,22 @@ import {
   EXPENSE_CATEGORIES,
 } from '../types/transaction';
 
-interface TransactionModalProps {
+type TransactionModalProps = {
+  /** モーダルの表示状態 */
   isOpen: boolean;
+  /** モーダルを閉じる時のコールバック関数 */
   onClose: () => void;
+  /** フォーム送信時のコールバック関数 */
   onSubmit: (data: TransactionFormData) => void;
+  /** 編集対象の取引データ（新規作成時はnull） */
   transaction?: Transaction | null;
+  /** デフォルトの取引タイプ（デフォルト: 'income'） */
   defaultType?: TransactionType;
+  /** デフォルトの日付（YYYY-MM-DD形式） */
   defaultDate?: string;
-}
+};
 
-export const TransactionModal: React.FC<TransactionModalProps> = ({
+export const TransactionModal: FC<TransactionModalProps> = ({
   isOpen,
   onClose,
   onSubmit,

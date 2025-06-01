@@ -17,26 +17,39 @@ export type TransactionCategory =
   | 'healthcare' // 医療費
   | 'education' // 教育費
   | 'shopping' // 買い物
-  | 'other_expense'; // その他支出
+  | 'other_expense';
 
-export interface Transaction {
+export type Transaction = {
+  /** 取引のユニークID */
   id: string;
+  /** 取引の種類（収入・支出） */
   type: TransactionType;
+  /** 金額（円単位） */
   amount: number;
+  /** 取引のカテゴリー */
   category: TransactionCategory;
+  /** 取引の説明・詳細 */
   description: string;
-  date: string; // YYYY-MM-DD format
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface TransactionFormData {
-  type: TransactionType;
-  amount: number;
-  category: TransactionCategory;
-  description?: string;
+  /** 取引日（YYYY-MM-DD形式） */
   date: string;
-}
+  /** 作成日時（ISO文字列） */
+  createdAt: string;
+  /** 更新日時（ISO文字列） */
+  updatedAt: string;
+};
+
+export type TransactionFormData = {
+  /** 取引の種類（収入・支出） */
+  type: TransactionType;
+  /** 金額（円単位） */
+  amount: number;
+  /** 取引のカテゴリー */
+  category: TransactionCategory;
+  /** 取引の説明・詳細（任意） */
+  description?: string;
+  /** 取引日（YYYY-MM-DD形式） */
+  date: string;
+};
 
 export const CATEGORY_LABELS: Record<TransactionCategory, string> = {
   // 収入

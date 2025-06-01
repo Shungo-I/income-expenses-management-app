@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import Link from 'next/link';
 import Calendar from './components/Calendar';
 import { TransactionModal } from './components/TransactionModal';
@@ -9,7 +9,7 @@ import { ConfirmModal } from './components/ConfirmModal';
 import { useTransactions } from './hooks/useTransactions';
 import { Transaction, TransactionFormData } from './types/transaction';
 
-export default function Home() {
+const Home: FC = () => {
   const {
     transactions,
     isLoading,
@@ -377,4 +377,6 @@ export default function Home() {
       />
     </div>
   );
-}
+};
+
+export default Home;
