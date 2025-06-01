@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import Calendar from './components/Calendar';
 import { TransactionModal } from './components/TransactionModal';
 import { TransactionList } from './components/TransactionList';
@@ -140,9 +141,12 @@ export default function Home() {
               >
                 支出
               </button>
-              <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <Link 
+                href="/reports"
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              >
                 レポート
-              </button>
+              </Link>
             </nav>
           </div>
         </div>
