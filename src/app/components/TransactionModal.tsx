@@ -6,6 +6,7 @@ import {
   TransactionFormData,
   TransactionType,
   CATEGORY_LABELS,
+  CATEGORY_ICONS,
   INCOME_CATEGORIES,
   EXPENSE_CATEGORIES,
 } from '../types/transaction';
@@ -31,11 +32,12 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
     type: defaultType,
     amount: 0,
     category: defaultType === 'income' ? 'salary' : 'food',
-    description: '',
+    description: undefined,
     date: defaultDate || new Date().toISOString().split('T')[0],
   });
 
   const [errors, setErrors] = useState<Partial<TransactionFormData>>({});
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // モーダルが開いたときにフォームをリセット
   useEffect(() => {
@@ -55,13 +57,28 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
           type: defaultType,
           amount: 0,
           category: defaultType === 'income' ? 'salary' : 'food',
-          description: '',
+          description: undefined,
           date: defaultDate || new Date().toISOString().split('T')[0],
         });
       }
       setErrors({});
+      setIsDropdownOpen(false);
     }
   }, [isOpen, transaction, defaultType, defaultDate]);
+
+  // エスケープキーでドロップダウンを閉じる
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [isDropdownOpen]);
 
   // フォームの検証
   const validateForm = useCallback(() => {
@@ -69,10 +86,6 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
 
     if (formData.amount <= 0) {
       newErrors.amount = 0;
-    }
-
-    if (!formData.description.trim()) {
-      newErrors.description = '';
     }
 
     if (!formData.date) {
@@ -109,6 +122,11 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
     }
   };
 
+  // ドロップダウン外をクリックした時にドロップダウンを閉じる
+  const handleModalClick = () => {
+    setIsDropdownOpen(false);
+  };
+
   if (!isOpen) return null;
 
   const availableCategories =
@@ -116,10 +134,10 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto" onClick={handleModalClick}>
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -149,7 +167,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
             {/* 取引タイプ */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                取引タイプ
+                取引タイプ <span className="text-red-500">*</span>
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <button
@@ -180,7 +198,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
             {/* 金額 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                金額
+                金額 <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
@@ -199,6 +217,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                   placeholder="0"
                   min="0"
                   step="1"
+                  required
                 />
               </div>
               {errors.amount !== undefined && (
@@ -211,34 +230,98 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
             {/* カテゴリー */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                カテゴリー
+                カテゴリー <span className="text-red-500">*</span>
               </label>
-              <select
-                value={formData.category}
-                onChange={e =>
-                  setFormData(prev => ({
-                    ...prev,
-                    category: e.target.value as any,
-                  }))
-                }
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              >
-                {availableCategories.map(category => (
-                  <option key={category} value={category}>
-                    {CATEGORY_LABELS[category]}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsDropdownOpen(!isDropdownOpen);
+                  }}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white flex items-center justify-between"
+                >
+                  <div className="flex items-center space-x-3">
+                    <svg
+                      className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d={CATEGORY_ICONS[formData.category]}
+                      />
+                    </svg>
+                    <span>{CATEGORY_LABELS[formData.category]}</span>
+                  </div>
+                  <svg
+                    className={`w-5 h-5 text-gray-400 transition-transform ${
+                      isDropdownOpen ? 'rotate-180' : ''
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+
+                {isDropdownOpen && (
+                  <div 
+                    className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {availableCategories.map(category => (
+                      <button
+                        key={category}
+                        type="button"
+                        onClick={() => {
+                          setFormData(prev => ({ ...prev, category }));
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`w-full px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center space-x-3 transition-colors ${
+                          formData.category === category
+                            ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                            : 'text-gray-900 dark:text-white'
+                        }`}
+                      >
+                        <svg
+                          className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d={CATEGORY_ICONS[category]}
+                          />
+                        </svg>
+                        <span>{CATEGORY_LABELS[category]}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* 説明 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                説明
+                説明 <span className="text-gray-400 text-sm">(任意)</span>
               </label>
               <input
                 type="text"
-                value={formData.description}
+                value={formData.description || ''}
                 onChange={e =>
                   setFormData(prev => ({
                     ...prev,
@@ -248,17 +331,12 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 placeholder="取引の詳細を入力..."
               />
-              {errors.description !== undefined && (
-                <p className="text-red-500 text-sm mt-1">
-                  説明を入力してください
-                </p>
-              )}
             </div>
 
             {/* 日付 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                日付
+                日付 <span className="text-red-500">*</span>
               </label>
               <input
                 type="date"
@@ -267,6 +345,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                   setFormData(prev => ({ ...prev, date: e.target.value }))
                 }
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                required
               />
               {errors.date !== undefined && (
                 <p className="text-red-500 text-sm mt-1">

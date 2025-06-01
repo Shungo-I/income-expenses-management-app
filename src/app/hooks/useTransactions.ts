@@ -48,6 +48,7 @@ export const useTransactions = () => {
       const newTransaction: Transaction = {
         id: generateId(),
         ...formData,
+        description: formData.description || '',
         createdAt: now,
         updatedAt: now,
       };
@@ -72,6 +73,7 @@ export const useTransactions = () => {
             ? {
                 ...transaction,
                 ...formData,
+                description: formData.description || '',
                 updatedAt: new Date().toISOString(),
               }
             : transaction
